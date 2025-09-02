@@ -6,41 +6,26 @@ metadata:
 data:
   cwagentconfig.json: |
     {
-      "agent": {
-        "region": "us-east-1"
-      },
       "logs": {
-        "logs_collected": {
-          "files": {
-            "collect_list": []
+        "metrics_collected": {
+          "kubernetes": {
+            "cluster_name": "STG-EKS-ACRLI",
+            "metrics_collection_interval": 60,
+            "metrics_include": [
+              "pod_cpu_utilization",
+              "pod_memory_utilization",
+              "pod_network_rx_bytes",
+              "pod_network_tx_bytes",
+              "container_cpu_utilization",
+              "container_memory_utilization",
+              "container_network_rx_bytes",
+              "container_network_tx_bytes",
+              "pod_cpu_utilization_over_pod_limit"
+            ],
+            "namespace": ["acrli-daya-test", "dayatest"],
+            "label_include": ["namespace","pod_name","container_name"]
           }
         },
         "force_flush_interval": 5
-      },
-      "metrics": {
-        "metrics_collected": {
-          "kubernetes": [
-            {
-              "cluster_name": "STG-EKS-ACRLI",
-              "metrics_collection_interval": 60,
-              "measurement": [
-                "pod_cpu_utilization",
-                "pod_memory_utilization",
-                "pod_network_rx_bytes",
-                "pod_network_tx_bytes",
-                "container_cpu_utilization",
-                "container_memory_utilization",
-                "container_network_rx_bytes",
-                "container_network_tx_bytes",
-                "pod_cpu_utilization_over_pod_limit"
-              ],
-              "namespace": ["acrli-daya-test", "dayatest"],
-              "label_include": ["namespace","pod_name","container_name"]
-            }
-          ]
-        },
-        "append_dimensions": {
-          "ClusterName": "STG-EKS-ACRLI"
-        }
       }
     }
