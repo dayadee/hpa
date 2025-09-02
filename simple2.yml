@@ -4,7 +4,7 @@ kind: Namespace
 metadata:
   name: dayatest
 ---
-# Nginx deployment with BusyBox CPU spike sidecar
+# Nginx deployment with stress-ng sidecar
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,20 +28,16 @@ spec:
             cpu: "200m"
             memory: "256Mi"
           limits:
-            cpu: "500m"
+            cpu: "2000m"   # allow stress to exceed normal usage
             memory: "512Mi"
-      - name: cpu-spike
-        image: busybox
+      - name: cpu-stress
+        image: polinux/stress   # stress-ng image
         command: ["/bin/sh", "-c"]
         args:
           - |
             while true; do
-              echo "Starting CPU spike for 2 minutes..."
-              end=$((SECONDS+120))
-              while [ $SECONDS -lt $end ]; do
-                : &
-                : &
-              done
+              echo "CPU spike for 2 minutes..."
+              stress-ng --cpu 1 --timeout 120s --metrics-brief
               echo "Spike finished, sleeping 2 minutes..."
               sleep 120
             done
