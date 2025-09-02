@@ -11,17 +11,11 @@ data:
       },
       "logs": {
         "force_flush_interval": 5,
-        "logs_collected": {
-          "files": {}
-        }
-      },
-      "metrics": {
         "metrics_collected": {
           "kubernetes": {
             "cluster_name": "STG-EKS-ACRLI",
             "metrics_collection_interval": 60,
             "namespace": ["dayatest"],
-            "measurement": ["cpu", "memory", "network"], 
             "metrics_include": [
               "pod_cpu_utilization",
               "pod_cpu_utilization_over_pod_limit",
@@ -35,10 +29,6 @@ data:
             ],
             "label_include": ["namespace", "pod_name", "container_name"]
           }
-        },
-        "append_dimensions": {
-          "ClusterName": "STG-EKS-ACRLI",
-          "Namespace": "dayatest"
         }
       }
     }
