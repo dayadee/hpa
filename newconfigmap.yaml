@@ -5,7 +5,7 @@ metadata:
   namespace: amazon-cloudwatch
 data:
   cwagentconfig.json: |
-    { 
+    {
       "agent": {
         "region": "us-east-1"
       },
@@ -19,26 +19,28 @@ data:
       },
       "metrics": {
         "metrics_collected": {
-          "kubernetes": {
-            "cluster_name": "STG-EKS-ACRLI",
-            "metrics_collection_interval": 60,
-            "measurement": [
-              "pod_cpu_utilization",
-              "pod_memory_utilization",
-              "pod_network_rx_bytes",
-              "pod_network_tx_bytes",
-              "container_cpu_utilization",
-              "container_memory_utilization",
-              "container_network_rx_bytes",
-              "container_network_tx_bytes",
-              "pod_cpu_utilization_over_pod_limit"
-            ],
-            "label_include": ["namespace","pod_name","container_name"]
-          }
+          "kubernetes": [
+            {
+              "cluster_name": "STG-EKS-ACRLI",
+              "metrics_collection_interval": 60,
+              "measurement": [
+                "pod_cpu_utilization",
+                "pod_memory_utilization",
+                "pod_network_rx_bytes",
+                "pod_network_tx_bytes",
+                "container_cpu_utilization",
+                "container_memory_utilization",
+                "container_network_rx_bytes",
+                "container_network_tx_bytes",
+                "pod_cpu_utilization_over_pod_limit"
+              ],
+              "namespace": ["acrli-daya-test", "dayatest"],
+              "label_include": ["namespace","pod_name","container_name"]
+            }
+          ]
         },
         "append_dimensions": {
-          "ClusterName": "STG-EKS-ACRLI",
-          "Namespace": "dayatest"
+          "ClusterName": "STG-EKS-ACRLI"
         }
       }
     }
