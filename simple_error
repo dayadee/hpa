@@ -1,9 +1,17 @@
-❯ kubectl logs  cloudwatch-agent-76qmw -n amazon-cloudwatch
+kubectl logs cloudwatch-agent-7h8gd -n amazon-cloudwatch
 D! [EC2] Found active network interface
 I! imds retry client will retry 1 timesI! Detected the instance is EC2
-2025/09/02 17:32:53 Reading json config file path: /opt/aws/amazon-cloudwatch-agent/bin/default_linux_config.json ...
+2025/09/02 17:44:16 Reading json config file path: /opt/aws/amazon-cloudwatch-agent/bin/default_linux_config.json ...
 /opt/aws/amazon-cloudwatch-agent/bin/default_linux_config.json does not exist or cannot read. Skipping it.
-2025/09/02 17:32:53 Reading json config file path: /etc/cwagentconfig/..2025_09_02_17_29_38.70036559/cwagentconfig.json ...
-2025/09/02 17:32:53 unable to scan config dir /etc/cwagentconfig with error: unable to parse json, error: invalid character '#' looking for beginning of object key string
-2025/09/02 17:32:53 I! Return exit error: exit code=99
-2025/09/02 17:32:53 I! No json config files found, please provide config, exit now
+2025/09/02 17:44:16 Reading json config file path: /etc/cwagentconfig/..2025_09_02_17_43_30.2543098767/cwagentconfig.json ...
+2025/09/02 17:44:16 Find symbolic link /etc/cwagentconfig/..data
+2025/09/02 17:44:16 Find symbolic link /etc/cwagentconfig/cwagentconfig.json
+2025/09/02 17:44:16 Reading json config file path: /etc/cwagentconfig/cwagentconfig.json ...
+2025/09/02 17:44:16 E! Invalid Json input schema.
+2025/09/02 17:44:16 E! Invalid Json input schema.
+2025/09/02 17:44:16 Under path : /metrics/metrics_collected/kubernetes | Error : measurement is required
+2025/09/02 17:44:16 Under path : /logs | Error : Must validate at least one schema (anyOf)
+2025/09/02 17:44:16 Under path : /logs | Error : logs_collected is required
+2025/09/02 17:44:16 Configuration validation first phase failed. Agent version: 1.0. Verify the JSON input is only using features supported by this version.
+2025/09/02 17:44:16 I! Return exit error: exit code=1
+2025/09/02 17:44:16 E! Cannot translate JSON, ERROR is exit status 1
