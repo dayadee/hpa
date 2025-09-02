@@ -1,0 +1,2 @@
+kubectl exec -it nginx-test-5cfbcdd7c9-tmdz8 -n dayatest -- /bin/sh
+error: Internal error occurred: error sending request: Post "https://172.17.13.238:10250/exec/dayatest/nginx-test-5cfbcdd7c9-tmdz8/nginx?command=%2Fbin%2Fsh&input=1&output=1&tty=1": dial tcp 172.17.13.238:10250: i/o timeout
