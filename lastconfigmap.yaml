@@ -10,7 +10,10 @@ data:
         "region": "us-east-1"
       },
       "logs": {
-        "force_flush_interval": 5
+        "force_flush_interval": 5,
+        "logs_collected": {
+          "files": {}
+        }
       },
       "metrics": {
         "metrics_collected": {
@@ -18,7 +21,7 @@ data:
             "cluster_name": "STG-EKS-ACRLI",
             "metrics_collection_interval": 60,
             "namespace": ["dayatest"],
-            "measurement": ["cpu","memory"], 
+            "measurement": ["cpu","memory"],
             "metrics_include": [
               "pod_cpu_utilization",
               "pod_cpu_utilization_over_pod_limit",
