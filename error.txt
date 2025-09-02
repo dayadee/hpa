@@ -1,0 +1,68 @@
+kubectl get  hpa acr-li-b-test-hpa -n acrli-daya-test -o yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"autoscaling/v2","kind":"HorizontalPodAutoscaler","metadata":{"annotations":{},"name":"acr-li-b-test-hpa","namespace":"acrli-daya-test"},"spec":{"behavior":{"scaleDown":{"policies":[{"periodSeconds":180,"type":"Percent","value":10}],"selectPolicy":"Max","stabilizationWindowSeconds":600},"scaleUp":{"policies":[{"periodSeconds":180,"type":"Percent","value":50}],"selectPolicy":"Max","stabilizationWindowSeconds":300}},"maxReplicas":5,"metrics":[{"external":{"metric":{"name":"cwem-cpu-acr-li-b"},"target":{"type":"Value","value":"70"}},"type":"External"},{"external":{"metric":{"name":"cwem-nwin-acr-li-b"},"target":{"type":"Value","value":16000000}},"type":"External"}],"minReplicas":1,"scaleTargetRef":{"apiVersion":"apps/v1","kind":"Deployment","name":"acr-li-b-test"}}}
+  creationTimestamp: "2025-09-02T03:50:44Z"
+  name: acr-li-b-test-hpa
+  namespace: acrli-daya-test
+  resourceVersion: "379842794"
+  uid: d96fa567-7646-4724-b51b-c3dbc2b25dbc
+spec:
+  behavior:
+    scaleDown:
+      policies:
+      - periodSeconds: 180
+        type: Percent
+        value: 10
+      selectPolicy: Max
+      stabilizationWindowSeconds: 600
+    scaleUp:
+      policies:
+      - periodSeconds: 180
+        type: Percent
+        value: 50
+      selectPolicy: Max
+      stabilizationWindowSeconds: 300
+  maxReplicas: 5
+  metrics:
+  - external:
+      metric:
+        name: cwem-cpu-acr-li-b
+      target:
+        type: Value
+        value: "70"
+    type: External
+  - external:
+      metric:
+        name: cwem-nwin-acr-li-b
+      target:
+        type: Value
+        value: 16M
+    type: External
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: acr-li-b-test
+status:
+  conditions:
+  - lastTransitionTime: "2025-09-02T03:50:59Z"
+    message: the HPA controller was able to get the target's current scale
+    reason: SucceededGetScale
+    status: "True"
+    type: AbleToScale
+  - lastTransitionTime: "2025-09-02T03:50:59Z"
+    message: 'the HPA was unable to compute the replica count: unable to get external
+      metric acrli-daya-test/cwem-cpu-acr-li-b/nil: unable to fetch metrics from external
+      metrics API: the server is currently unable to handle the request (get cwem-cpu-acr-li-b.external.metrics.k8s.io)'
+    reason: FailedGetExternalMetric
+    status: "False"
+    type: ScalingActive
+  currentMetrics:
+  - type: ""
+  - type: ""
+  currentReplicas: 1
+  desiredReplicas: 0
