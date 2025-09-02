@@ -1,0 +1,33 @@
+kubectl describe  hpa acr-li-b-test-hpa -n acrli-daya-test
+Name:                                   acr-li-b-test-hpa
+Namespace:                              acrli-daya-test
+Labels:                                 <none>
+Annotations:                            <none>
+CreationTimestamp:                      Tue, 02 Sep 2025 09:20:44 +0530
+Reference:                              Deployment/acr-li-b-test
+Metrics:                                ( current / target )
+  "cwem-cpu-acr-li-b" (target value):   <unknown> / 70
+  "cwem-nwin-acr-li-b" (target value):  <unknown> / 16M
+Min replicas:                           1
+Max replicas:                           5
+Behavior:
+  Scale Up:
+    Stabilization Window: 300 seconds
+    Select Policy: Max
+    Policies:
+      - Type: Percent  Value: 50  Period: 180 seconds
+  Scale Down:
+    Stabilization Window: 600 seconds
+    Select Policy: Max
+    Policies:
+      - Type: Percent  Value: 10  Period: 180 seconds
+Deployment pods:       1 current / 0 desired
+Conditions:
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+  ScalingActive  False   FailedGetExternalMetric  the HPA was unable to compute the replica count: unable to get external metric acrli-daya-test/cwem-cpu-acr-li-b/nil: unable to fetch metrics from external metrics API: the server is currently unable to handle the request (get cwem-cpu-acr-li-b.external.metrics.k8s.io)
+Events:
+  Type     Reason                   Age                     From                       Message
+  ----     ------                   ----                    ----                       -------
+  Warning  FailedGetExternalMetric  4m36s (x541 over 139m)  horizontal-pod-autoscaler  unable to get external metric acrli-daya-test/cwem-cpu-acr-li-b/nil: unable to fetch metrics from external metrics API: the server is currently unable to handle the request (get cwem-cpu-acr-li-b.external.metrics.k8s.io)
