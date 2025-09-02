@@ -1,0 +1,30 @@
+ kubectl get cm cwagentconfig -n amazon-cloudwatch -o yaml
+apiVersion: v1
+data:
+  cwagentconfig.json: |
+    {
+      "logs": {
+        "metrics_collected": {
+          "kubernetes": {
+            "cluster_name": "STG-EKS-ACRLI",
+            "metrics_collection_interval": 60
+          },
+          "container": {
+            "metrics_collection_interval": 60,
+            "namespace": ["acrli-daya-test"],
+            "container_names": ["acr-li-b-test"]
+          }
+        },
+        "force_flush_interval": 5
+      }
+    }
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"cwagentconfig.json":"{\n  \"logs\": {\n    \"metrics_collected\": {\n      \"kubernetes\": {\n        \"cluster_name\": \"STG-EKS-ACRLI\",\n        \"metrics_collection_interval\": 60\n      },\n      \"container\": {\n        \"metrics_collection_interval\": 60,\n        \"namespace\": [\"acrli-daya-test\"],\n        \"container_names\": [\"acr-li-b-test\"]\n      }\n    },\n    \"force_flush_interval\": 5\n  }\n}\n"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"cwagentconfig","namespace":"amazon-cloudwatch"}}
+  creationTimestamp: "2025-09-02T05:12:59Z"
+  name: cwagentconfig
+  namespace: amazon-cloudwatch
+  resourceVersion: "379921976"
+  uid: 196ccc3c-29bd-482f-a0a8-cd9547b25136
