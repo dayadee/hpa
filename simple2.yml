@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dayatest
+---
+# Nginx deployment with BusyBox CPU spike sidecar
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test
+  namespace: dayatest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+      - name: cpu-spike
+        image: busybox
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            while true; do
+              echo "Starting CPU spike for 2 minutes..."
+              end=$((SECONDS+120))
+              while [ $SECONDS -lt $end ]; do
+                : &
+                : &
+              done
+              echo "Spike finished, sleeping 2 minutes..."
+              sleep 120
+            done
+---
+# CloudWatch Agent ConfigMap for pod + container metrics
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cwagentconfig-dayatest
+  namespace: amazon-cloudwatch
+data:
+  cwagentconfig.json: |
+    {
+      "agent": {
+        "region": "us-east-1"
+      },
+      "logs": {
+        "force_flush_interval": 5
+      },
+      "metrics": {
+        "metrics_collected": {
+          "kubernetes": {
+            "cluster_name": "STG-EKS-ACRLI",
+            "metrics_collection_interval": 60,
+            "metrics_include": [
+              "pod_cpu_utilization",
+              "pod_memory_utilization",
+              "pod_network_rx_bytes",
+              "pod_network_tx_bytes",
+              "container_cpu_utilization",
+              "container_memory_utilization",
+              "container_network_rx_bytes",
+              "container_network_tx_bytes",
+              "pod_cpu_utilization_over_pod_limit"
+            ],
+            "label_include": ["namespace","pod_name","container_name"]
+          }
+        },
+        "append_dimensions": {
+          "ClusterName": "STG-EKS-ACRLI",
+          "Namespace": "dayatest"
+        }
+      }
+    }
