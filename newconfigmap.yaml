@@ -11,6 +11,7 @@ data:
           "kubernetes": {
             "cluster_name": "STG-EKS-ACRLI",
             "metrics_collection_interval": 60,
+            "namespace": ["dayatest"],
             "metrics_include": [
               "pod_cpu_utilization",
               "pod_memory_utilization",
@@ -22,8 +23,7 @@ data:
               "container_network_tx_bytes",
               "pod_cpu_utilization_over_pod_limit"
             ],
-            "namespace": ["acrli-daya-test", "dayatest"],
-            "label_include": ["namespace","pod_name","container_name"]
+            "label_include": ["namespace", "pod_name", "container_name"]
           }
         },
         "force_flush_interval": 5
