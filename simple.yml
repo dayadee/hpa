@@ -31,7 +31,7 @@ spec:
             cpu: "500m"
             memory: "512Mi"
 ---
-# Optional Job for generating network load (can remove if not needed)
+# Optional load generator (busybox) to create CPU/network load
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -52,7 +52,7 @@ spec:
       restartPolicy: Never
   backoffLimit: 0
 ---
-# CloudWatch Agent ConfigMap for pod-level metrics
+# CloudWatch Agent ConfigMap for pod + container metrics
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -76,7 +76,11 @@ data:
               "pod_cpu_utilization",
               "pod_memory_utilization",
               "pod_network_rx_bytes",
-              "pod_network_tx_bytes"
+              "pod_network_tx_bytes",
+              "container_cpu_utilization",
+              "container_memory_utilization",
+              "container_network_rx_bytes",
+              "container_network_tx_bytes"
             ],
             "label_include": ["namespace","pod_name","container_name"]
           }
