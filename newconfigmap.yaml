@@ -5,7 +5,7 @@ metadata:
   namespace: amazon-cloudwatch
 data:
   cwagentconfig.json: |
-    {
+    { 
       "agent": {
         "region": "us-east-1"
       },
