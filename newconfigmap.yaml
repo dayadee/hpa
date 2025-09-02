@@ -10,6 +10,11 @@ data:
         "region": "us-east-1"
       },
       "logs": {
+        "logs_collected": {
+          "files": {
+            "collect_list": []
+          }
+        },
         "force_flush_interval": 5
       },
       "metrics": {
@@ -17,7 +22,7 @@ data:
           "kubernetes": {
             "cluster_name": "STG-EKS-ACRLI",
             "metrics_collection_interval": 60,
-            "metrics_include": [
+            "measurement": [
               "pod_cpu_utilization",
               "pod_memory_utilization",
               "pod_network_rx_bytes",
