@@ -1,0 +1,170 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: acrli-daya-test
+---
+# Test deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acr-li-b-test
+  namespace: acrli-daya-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acr-li-b-test
+  template:
+    metadata:
+      labels:
+        app: acr-li-b-test
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: acr-li-b-test-hpa
+  namespace: acrli-daya-test
+spec:
+  minReplicas: 1
+  maxReplicas: 5
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: acr-li-b-test
+  metrics:
+  - type: External
+    external:
+      metric:
+        name: cwem-cpu-acr-li-b
+      target:
+        type: Value
+        value: "70"
+  - type: External
+    external:
+      metric:
+        name: cwem-nwin-acr-li-b
+      target:
+        type: Value
+        value: 16000000
+  behavior:
+    scaleUp:
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 180
+      stabilizationWindowSeconds: 300
+      selectPolicy: Max
+    scaleDown:
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 180
+      stabilizationWindowSeconds: 600
+      selectPolicy: Max
+---
+# Load generator to stress test deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+  namespace: acrli-daya-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loadgen
+  template:
+    metadata:
+      labels:
+        app: loadgen
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["/bin/sh", "-c"]
+        args: ["while true; do wget -q -O- http://acr-li-b-test; done"]
+---
+# CloudWatch Agent ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cwagent-sa-test
+  namespace: acrli-daya-test
+---
+# CloudWatch Agent ConfigMap for test pods
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cwagentconfig-test
+  namespace: acrli-daya-test
+data:
+  cwagentconfig.json: |
+    {
+      "agent": {
+        "region": "us-east-1"
+      },
+      "metrics_collected": {
+        "kubernetes": {
+          "cluster_name": "TEST-EKS-ACRLI",
+          "metrics_collection_interval": 60
+        },
+        "container": {
+          "metrics_collection_interval": 60,
+          "namespace": ["acrli-daya-test"],
+          "container_names": ["acr-li-b-test"]
+        }
+      },
+      "logs": {
+        "force_flush_interval": 5
+      }
+    }
+---
+# CloudWatch Agent DaemonSet for test pods
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cloudwatch-agent-test
+  namespace: acrli-daya-test
+spec:
+  selector:
+    matchLabels:
+      name: cloudwatch-agent-test
+  template:
+    metadata:
+      labels:
+        name: cloudwatch-agent-test
+    spec:
+      serviceAccountName: cwagent-sa-test
+      containers:
+      - name: cloudwatch-agent
+        image: amazon/cloudwatch-agent:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 200m
+            memory: 400Mi
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/cwagentconfig
+      volumes:
+      - name: config-volume
+        configMap:
+          name: cwagentconfig-test
+          items:
+          - key: cwagentconfig.json
+            path: cwagentconfig.json
