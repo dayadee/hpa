@@ -1,16 +1,10 @@
-kubectl logs cloudwatch-agent-7tzqd -n amazon-cloudwatch
-D! [EC2] Found active network interface
-I! imds retry client will retry 1 timesI! Detected the instance is EC2
-2025/09/02 18:45:48 Reading json config file path: /opt/aws/amazon-cloudwatch-agent/bin/default_linux_config.json ...
-/opt/aws/amazon-cloudwatch-agent/bin/default_linux_config.json does not exist or cannot read. Skipping it.
-2025/09/02 18:45:48 Reading json config file path: /etc/cwagentconfig/..2025_09_02_18_45_05.2717510174/cwagentconfig.json ...
-2025/09/02 18:45:48 Find symbolic link /etc/cwagentconfig/..data
-2025/09/02 18:45:48 Find symbolic link /etc/cwagentconfig/cwagentconfig.json
-2025/09/02 18:45:48 Reading json config file path: /etc/cwagentconfig/cwagentconfig.json ...
-2025/09/02 18:45:48 E! Invalid Json input schema.
-2025/09/02 18:45:48 E! Invalid Json input schema.
-2025/09/02 18:45:48 Under path : /logs | Error : Must validate at least one schema (anyOf)
-2025/09/02 18:45:48 Under path : /logs | Error : logs_collected is required
-2025/09/02 18:45:48 Configuration validation first phase failed. Agent version: 1.0. Verify the JSON input is only using features supported by this version.
-2025/09/02 18:45:48 I! Return exit error: exit code=1
-2025/09/02 18:45:48 E! Cannot translate JSON, ERROR is exit status 1
+❯ kubectl get pods -n dayatest -o wide
+NAME                             READY   STATUS    RESTARTS        AGE   IP              NODE                            NOMINATED NODE   READINESS GATES
+jump-pod                         1/1     Running   0               29s   172.17.16.162   ip-172-17-23-177.ec2.internal   <none>           <none>
+stress-test-5d546f6b87-gbvpr     1/1     Running   17 (75s ago)    62m   172.17.25.171   ip-172-17-30-226.ec2.internal   <none>           <none>
+ubuntu-stress-67b5d68db4-4jpt2   1/1     Running   3 (2m46s ago)   13m   172.17.29.7     ip-172-17-30-226.ec2.internal   <none>           <none>
+❯ kubectl exec -it jump-pod -n dayatest --bash
+error: unknown flag: --bash
+See 'kubectl exec --help' for usage.
+❯ kubectl exec -it jump-pod -n dayatest -- bash
+error: Internal error occurred: error sending request: Post "https://172.17.23.177:10250/exec/dayatest/jump-pod/jump?command=bash&input=1&output=1&tty=1": dial tcp 172.17.23.177:10250: i/o timeout
