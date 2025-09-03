@@ -1,3 +1,19 @@
-kubectl describe pod k8s-cloudwatch-adapter-7b75468c65-s2tlj -n monitoring | grep ConfigMap
-    ConfigMapName:           kube-root-ca.crt
-    ConfigMapOptional:       <nil>
+❯ kubectl get replicaset -n monitoring | grep k8s-cloudwatch-adapter
+k8s-cloudwatch-adapter-7b75468c65   1         1         1       679d
+❯ kubectl get replicasets k8s-cloudwatch-adapter-7b75468c65 - n monitoring -o yaml | less
+
+[5]  + 2161278 exit 1     kubectl get replicasets k8s-cloudwatch-adapter-7b75468c65 - n monitoring -o  |
+       2161279 suspended  less
+❯ kubectl get pod k8s-cloudwatch-adapter-7b75468c65-s2tlj -n monitoring -o yaml | grep -A5 "ownerReferences"
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: k8s-cloudwatch-adapter-7b75468c65
+❯ kubectl describe rs k8s-cloudwatch-adapter-7b75468c65 -n monitoring | grep -i "controlled by"
+Controlled By:  Deployment/k8s-cloudwatch-adapter
+❯ kubectl get deployments  k8-cloudwatch-adapter -n monitoring -o yaml | less
+
+[6]  + 2163707 exit 1     kubectl get deployments k8-cloudwatch-adapter -n monitoring -o yaml |
+       2163708 suspended  less
