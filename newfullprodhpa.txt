@@ -1,0 +1,154 @@
+kubectl get pods -A | grep adapter                                                            ✔ │    PRD-EKS-ACRLI 󱃾  test@daya8  09:30:50   
+❯ kubectl get pods -A | grep adapter
+monitoring          k8s-cloudwatch-adapter-6fcf974b98-tm5lf         1/1     Running   0               32d
+monitoring          prometheus-adapter-68f5f95f95-hrzps             1/1     Running   0               32d
+monitoring          prometheus-adapter-68f5f95f95-wx7sv             1/1     Running   0               32d
+❯ kubectl describe pod k8s-cloudwatch-adapter-6fcf974b98-tm5lf -n monitoring
+Name:             k8s-cloudwatch-adapter-6fcf974b98-tm5lf
+Namespace:        monitoring
+Priority:         0
+Service Account:  k8s-cloudwatch-adapter
+Node:             ip-172-17-29-32.ec2.internal/172.17.29.32
+Start Time:       Fri, 01 Aug 2025 16:28:12 +0530
+Labels:           app=k8s-cloudwatch-adapter
+                  pod-template-hash=6fcf974b98
+Annotations:      <none>
+Status:           Running
+IP:               172.17.27.1
+IPs:
+  IP:           172.17.27.1
+Controlled By:  ReplicaSet/k8s-cloudwatch-adapter-6fcf974b98
+Containers:
+  k8s-cloudwatch-adapter:
+    Container ID:  containerd://82c014fdeef735219fd0c73442a1affaf57f19ea3a69793699854b3c62c0fe8b
+    Image:         833376745199.dkr.ecr.us-east-1.amazonaws.com/chankh/k8s-cloudwatch-adapter:v0.10.0
+    Image ID:      833376745199.dkr.ecr.us-east-1.amazonaws.com/chankh/k8s-cloudwatch-adapter@sha256:276a633f2a42ae6b4f6e3644de517eee09780c47604cadb4facd4b289108a8ba
+    Ports:         6443/TCP, 8080/TCP
+    Host Ports:    0/TCP, 0/TCP
+    Args:
+      /adapter
+      --cert-dir=/tmp
+      --secure-port=6443
+      --logtostderr=true
+      --v=2
+    State:          Running
+      Started:      Fri, 01 Aug 2025 16:28:14 +0530
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      AWS_STS_REGIONAL_ENDPOINTS:   regional
+      AWS_DEFAULT_REGION:           us-east-1
+      AWS_REGION:                   us-east-1
+      AWS_ROLE_ARN:                 arn:aws:iam::833376745199:role/prd-k8s-cw-adapter-sa
+      AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    Mounts:
+      /tmp from temp-vol (rw)
+      /var/run/secrets/eks.amazonaws.com/serviceaccount from aws-iam-token (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-qxpzt (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True
+  Initialized                 True
+  Ready                       True
+  ContainersReady             True
+  PodScheduled                True
+Volumes:
+  aws-iam-token:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  86400
+  temp-vol:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:
+    SizeLimit:  <unset>
+  kube-api-access-qxpzt:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>
+❯ kubectl describe hpa acr-li-b -n acr-li
+Name:                                   acr-li-b
+Namespace:                              acr-li
+Labels:                                 <none>
+Annotations:                            <none>
+CreationTimestamp:                      Thu, 14 Mar 2024 04:21:47 +0530
+Reference:                              Deployment/acr-li-b
+Metrics:                                ( current / target )
+  "cwem-cpu-acr-li-b" (target value):   66 / 70
+  "cwem-nwin-acr-li-b" (target value):  10490877 / 16M
+Min replicas:                           12
+Max replicas:                           100
+Behavior:
+  Scale Up:
+    Stabilization Window: 300 seconds
+    Select Policy: Max
+    Policies:
+      - Type: Percent  Value: 50  Period: 180 seconds
+  Scale Down:
+    Stabilization Window: 600 seconds
+    Select Policy: Max
+    Policies:
+      - Type: Percent  Value: 10  Period: 180 seconds
+Deployment pods:       29 current / 29 desired
+Conditions:
+  Type            Status  Reason              Message
+  ----            ------  ------              -------
+  AbleToScale     True    ReadyForNewScale    recommended size matches current size
+  ScalingActive   True    ValidMetricFound    the HPA was able to successfully calculate a replica count from external metric cwem-cpu-acr-li-b(nil)
+  ScalingLimited  False   DesiredWithinRange  the desired count is within the acceptable range
+Events:
+  Type    Reason             Age                    From                       Message
+  ----    ------             ----                   ----                       -------
+  Normal  SuccessfulRescale  48m (x5 over 4d)       horizontal-pod-autoscaler  New size: 35; reason: All metrics below target
+  Normal  SuccessfulRescale  45m (x3 over 4d4h)     horizontal-pod-autoscaler  New size: 33; reason: All metrics below target
+  Normal  SuccessfulRescale  11m (x3 over 3d23h)    horizontal-pod-autoscaler  New size: 30; reason: All metrics below target
+  Normal  SuccessfulRescale  9m34s (x4 over 2d23h)  horizontal-pod-autoscaler  New size: 29; reason: All metrics below target
+❯ kubectl get --raw "/apis/external.metrics.k8s.io/v1beta1" | jq .
+{
+  "kind": "APIResourceList",
+  "apiVersion": "v1",
+  "groupVersion": "external.metrics.k8s.io/v1beta1",
+  "resources": [
+    {
+      "name": "cwem-cpu-acr-li-b",
+      "singularName": "",
+      "namespaced": true,
+      "kind": "ExternalMetricValueList",
+      "verbs": [
+        "get"
+      ]
+    },
+    {
+      "name": "cwem-cpu-acr-li-a",
+      "singularName": "",
+      "namespaced": true,
+      "kind": "ExternalMetricValueList",
+      "verbs": [
+        "get"
+      ]
+    },
+    {
+      "name": "cwem-nwin-acr-li-a",
+      "singularName": "",
+      "namespaced": true,
+      "kind": "ExternalMetricValueList",
+      "verbs": [
+        "get"
+      ]
+    },
+    {
+      "name": "cwem-nwin-acr-li-b",
+      "singularName": "",
+      "namespaced": true,
+      "kind": "ExternalMetricValueList",
+      "verbs": [
+        "get"
+      ]
+    }
+  ]
+}
