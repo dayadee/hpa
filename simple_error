@@ -1,68 +1,22 @@
-kubectl describe pod k8s-cloudwatch-adapter-7b75468c65-s2tlj -n monitoring
-Name:             k8s-cloudwatch-adapter-7b75468c65-s2tlj
-Namespace:        monitoring
-Priority:         0
-Service Account:  k8s-cloudwatch-adapter
-Node:             ip-172-17-13-238.ec2.internal/172.17.13.238
-Start Time:       Sat, 19 Apr 2025 03:35:28 +0530
-Labels:           app=k8s-cloudwatch-adapter
-                  pod-template-hash=7b75468c65
-Annotations:      <none>
-Status:           Running
-IP:               172.17.11.17
-IPs:
-  IP:           172.17.11.17
-Controlled By:  ReplicaSet/k8s-cloudwatch-adapter-7b75468c65
-Containers:
-  k8s-cloudwatch-adapter:
-    Container ID:  containerd://663b7fd2abde52b9e05d7f731812c8776424f2dd7524bc40b260a2cbe173282b
-    Image:         chankh/k8s-cloudwatch-adapter:v0.10.0
-    Image ID:      docker.io/chankh/k8s-cloudwatch-adapter@sha256:704ed2440882d4f74575246e611aaf9b660ce87e26200728fc20300ac380609c
-    Ports:         6443/TCP, 8080/TCP
-    Host Ports:    0/TCP, 0/TCP
-    Args:
-      /adapter
-      --cert-dir=/tmp
-      --secure-port=6443
-      --logtostderr=true
-      --v=2
-    State:          Running
-      Started:      Sat, 19 Apr 2025 03:35:30 +0530
-    Ready:          True
-    Restart Count:  0
-    Environment:
-      AWS_STS_REGIONAL_ENDPOINTS:   regional
-      AWS_DEFAULT_REGION:           us-east-1
-      AWS_REGION:                   us-east-1
-      AWS_ROLE_ARN:                 arn:aws:iam::833376745199:role/stg-k8s-cw-adapter-sa
-      AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
-    Mounts:
-      /tmp from temp-vol (rw)
-      /var/run/secrets/eks.amazonaws.com/serviceaccount from aws-iam-token (ro)
-      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-5n574 (ro)
+kubectl describe hpa  new-stress-hpa -n dayatest
+Name:                                             new-stress-hpa
+Namespace:                                        dayatest
+Labels:                                           <none>
+Annotations:                                      <none>
+CreationTimestamp:                                Wed, 03 Sep 2025 14:04:44 +0530
+Reference:                                        Deployment/new-stress
+Metrics:                                          ( current / target )
+  "cwem-cpu-dayatest-new-stress" (target value):  <unknown> / 50
+Min replicas:                                     1
+Max replicas:                                     10
+Deployment pods:                                  1 current / 0 desired
 Conditions:
-  Type                        Status
-  PodReadyToStartContainers   True
-  Initialized                 True
-  Ready                       True
-  ContainersReady             True
-  PodScheduled                True
-Volumes:
-  aws-iam-token:
-    Type:                    Projected (a volume that contains injected data from multiple sources)
-    TokenExpirationSeconds:  86400
-  temp-vol:
-    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
-    Medium:
-    SizeLimit:  <unset>
-  kube-api-access-5n574:
-    Type:                    Projected (a volume that contains injected data from multiple sources)
-    TokenExpirationSeconds:  3607
-    ConfigMapName:           kube-root-ca.crt
-    ConfigMapOptional:       <nil>
-    DownwardAPI:             true
-QoS Class:                   BestEffort
-Node-Selectors:              <none>
-Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
-                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
-Events:                      <none>
+  Type           Status  Reason                   Message
+  ----           ------  ------                   -------
+  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+  ScalingActive  False   FailedGetExternalMetric  the HPA was unable to compute the replica count: unable to get external metric dayatest/cwem-cpu-dayatest-new-stress/nil: unable to fetch metrics from external metrics API: the server is currently unable to handle the request (get cwem-cpu-dayatest-new-stress.external.metrics.k8s.io)
+Events:
+  Type     Reason                        Age                 From                       Message
+  ----     ------                        ----                ----                       -------
+  Warning  FailedGetExternalMetric       12s (x7 over 103s)  horizontal-pod-autoscaler  unable to get external metric dayatest/cwem-cpu-dayatest-new-stress/nil: unable to fetch metrics from external metrics API: the server is currently unable to handle the request (get cwem-cpu-dayatest-new-stress.external.metrics.k8s.io)
+  Warning  FailedComputeMetricsReplicas  12s (x7 over 103s)  horizontal-pod-autoscaler  invalid metrics (1 invalid out of 1), first error is: failed to get cwem-cpu-dayatest-new-stress external metric value: failed to get external metric cwem-cpu-dayatest-new-stress: unable to get external metric dayatest/cwem-cpu-dayatest-new-stress/nil: unable to fetch metrics from external metrics API: the server is currently unable to handle the request (get cwem-cpu-dayatest-new-stress.external.metrics.k8s.io)
