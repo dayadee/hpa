@@ -1,19 +1,42 @@
-❯ kubectl get replicaset -n monitoring | grep k8s-cloudwatch-adapter
-k8s-cloudwatch-adapter-7b75468c65   1         1         1       679d
-❯ kubectl get replicasets k8s-cloudwatch-adapter-7b75468c65 - n monitoring -o yaml | less
-
-[5]  + 2161278 exit 1     kubectl get replicasets k8s-cloudwatch-adapter-7b75468c65 - n monitoring -o  |
-       2161279 suspended  less
-❯ kubectl get pod k8s-cloudwatch-adapter-7b75468c65-s2tlj -n monitoring -o yaml | grep -A5 "ownerReferences"
-  ownerReferences:
-  - apiVersion: apps/v1
-    blockOwnerDeletion: true
-    controller: true
-    kind: ReplicaSet
-    name: k8s-cloudwatch-adapter-7b75468c65
-❯ kubectl describe rs k8s-cloudwatch-adapter-7b75468c65 -n monitoring | grep -i "controlled by"
-Controlled By:  Deployment/k8s-cloudwatch-adapter
-❯ kubectl get deployments  k8-cloudwatch-adapter -n monitoring -o yaml | less
-
-[6]  + 2163707 exit 1     kubectl get deployments k8-cloudwatch-adapter -n monitoring -o yaml |
-       2163708 suspended  less
+ kubectl get deployment k8s-cloudwatch-adapter -n monitoring -o yaml | less
+          name: https
+          protocol: TCP
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp
+          name: temp-vol
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 65534
+      serviceAccount: k8s-cloudwatch-adapter
+      serviceAccountName: k8s-cloudwatch-adapter
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: temp-vol
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2023-10-24T23:07:38Z"
+    lastUpdateTime: "2023-10-24T23:07:42Z"
+    message: ReplicaSet "k8s-cloudwatch-adapter-7b75468c65" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2025-04-18T22:05:30Z"
+    lastUpdateTime: "2025-04-18T22:05:30Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
