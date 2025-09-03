@@ -1,0 +1,45 @@
+cat newstress.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: new-stress
+  namespace: dayatest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: new-stress
+  template:
+    metadata:
+      labels:
+        app: new-stress
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:22.04
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            # Install stress-ng non-interactively once
+            DEBIAN_FRONTEND=noninteractive apt-get update -qq \
+            && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq stress-ng curl \
+            && echo "Stress-ng installed, starting CPU stress loop..." \
+            && while true; do
+                 echo "$(date) CPU spike 2 mins (~80%)...";
+                 stress-ng --cpu 2 --cpu-load 100 --timeout 120s --metrics-brief;
+                 echo "$(date) Sleeping 1 min...";
+                 sleep 60;
+               done
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "2000m"
+            memory: "512Mi"
+        readinessProbe:
+          exec:
+            command: ["bash", "-c", "which stress-ng"]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
