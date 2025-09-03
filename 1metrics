@@ -1,0 +1,24 @@
+apiVersion: metrics.aws/v1alpha1
+kind: ExternalMetric
+metadata:
+  name: cwem-cpu-dayatest-new-stress
+  namespace: dayatest
+spec:
+  name: cwem-cpu-dayatest-new-stress
+  queries:
+    - id: cpu_dayatest_new_stress
+      metricStat:
+        metric:
+          namespace: ContainerInsights
+          metricName: pod_cpu_utilization_over_pod_limit
+          dimensions:
+            - name: PodName
+              value: new-stress
+            - name: Namespace
+              value: dayatest
+            - name: ClusterName
+              value: STG-EKS-ACRLI
+        period: 60
+        stat: Average
+        unit: Percent
+      returnData: true
