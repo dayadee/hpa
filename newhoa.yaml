@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: new-stress-hpa
+  namespace: dayatest
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: new-stress   # this should match your Deployment name
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: External
+    external:
+      metric:
+        name: cwem-cpu-dayatest-new-stress
+      target:
+        type: Value
+        value: "70"   # threshold for scaling, 70% CPU over pod limit
